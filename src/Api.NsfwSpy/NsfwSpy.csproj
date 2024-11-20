@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Authors>d00M_L0rDz</Authors>
+    <Company>d00M_L0rDz</Company>
+    <PackageTags>nsfw nude nudity porn pornography explicit image detect detection classification classifier</PackageTags>
+    <Description>An image classifier to identify explicit/pornographic images.</Description>
+    <RepositoryUrl>https://github.com/d00ML0rDz/NsfwSpy</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/d00ML0rDz/NsfwSpy</PackageProjectUrl>
+    <PackageIcon>NsfwSpy-Icon.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>3.4.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="11.1.0" />
+    <PackageReference Include="Microsoft.ML" Version="1.6.0" />
+    <PackageReference Include="Microsoft.ML.Vision" Version="1.6.0" />
+    <PackageReference Include="Mime" Version="3.3.0" />
+    <PackageReference Include="NLog" Version="5.1.3" />
+    <PackageReference Include="NLog.Targets.Syslog" Version="7.0.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.2.3" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist-Linux-GPU" Version="2.3.1" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist-Windows-GPU" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="NsfwSpy-Icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="NsfwSpy-Icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NsfwSpyModel.zip">
+      <Pack>true</Pack>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
+  </ItemGroup>
+
+</Project>
