@@ -79,23 +79,39 @@ namespace Api.Service.Services
 
         public async Task<bool> SendEmailPorTipoAsync(int TipoEmailId, string email, string nome, string CodigoUsuario, string HtmlExpansao, string idioma)
         {
-            _logge.Error($"TipoEmailId: {TipoEmailId} email {email} nome {nome} ");
-            EmailsNewsletterDto getByTipoNewsletter = await GetByTipoNewsletter(TipoEmailId, idioma);
+            // Log para depuração
+            _logge.Error($"TipoEmailId: {TipoEmailId}, email: {email ?? "vazio"}, nome: {nome ?? "vazio"}");
 
-            var emailRequestDto = new EmailRequestDto 
+            // Garantir que os parâmetros sejam não nulos
+            email = email ?? string.Empty;
+            nome = nome ?? string.Empty;
+            CodigoUsuario = CodigoUsuario ?? string.Empty;
+            HtmlExpansao = HtmlExpansao ?? string.Empty;
+            idioma = idioma ?? "pt"; // Defina um idioma padrão se necessário
+
+            // Obter a newsletter pelo tipo, com validação do retorno
+            EmailsNewsletterDto getByTipoNewsletter = await GetByTipoNewsletter(TipoEmailId, idioma) ?? new EmailsNewsletterDto
+            {
+                Nome = "Newsletter padrão",
+                HTML = "Conteúdo padrão"
+            };
+
+            // Criar o objeto EmailRequestDto com valores padrão caso necessário
+            var emailRequestDto = new EmailRequestDto
             {
                 ToEmail = email,
-                Subject = getByTipoNewsletter.Nome,
-                Body = getByTipoNewsletter.HTML,
+                Subject = getByTipoNewsletter.Nome ?? "Assunto Padrão",
+                Body = getByTipoNewsletter.HTML ?? "Corpo do email não disponível.",
                 Nome = nome,
                 CodigoUsuario = CodigoUsuario,
                 HtmlExpansao = HtmlExpansao
-
             };
 
+            // Enviar o email e retornar o resultado
             var result = await SendEmailAsync(emailRequestDto);
             return result;
         }
+
 
         public async Task<EmailsNewsletterDto> GetByTipoNewsletter(int TipoNewsletter, string pais)
         {

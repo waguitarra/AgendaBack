@@ -260,7 +260,6 @@ namespace Api.Application.Controllers
         }
 
 
-
         //[Authorize("Bearer")]
         [HttpPut]
         [Route("/api/Users/PutSenhaRecuperada")]
