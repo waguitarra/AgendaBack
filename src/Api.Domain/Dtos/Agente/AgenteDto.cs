@@ -11,6 +11,6 @@ namespace Domain.Dtos.Agente
         public bool Ativo { get; set; }
         public string Descricao { get; set; }
         public Guid UserId { get; set; }
-        public Guid ProdutoId { get; set; }
+        public Guid? ProdutoId { get; set; }
     }
 }

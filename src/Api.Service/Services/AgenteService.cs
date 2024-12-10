@@ -67,6 +67,11 @@ namespace Api.Service.Services
             var AgenteId = await _repository.SelectAsync(Agente.Id);
             if (AgenteId != null)
             {
+                if (Agente.ProdutoId == Guid.Empty)
+                {
+                    Agente.ProdutoId = null;
+                }
+
                 var entity = _mapper.Map<AgenteEntity>(Agente);
 
                 var result = await _repository.UpdateAsync(entity);
