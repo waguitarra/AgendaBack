@@ -19,8 +19,11 @@ namespace Api.Data.Mapping
             builder.Property(u => u.Mapa);
             builder.Property(u => u.Endereco);
             builder.Property(u => u.Delete);
+            builder.Property(u => u.CEP);
+            builder.Property(u => u.Numero);
             builder.Property(u => u.Endereco);
-            builder.Property(u => u.Mapa);
+            builder.Property(u => u.Estado);
+            builder.Property(u => u.Pais);
 
             builder.HasMany(p => p.Agente)
                 .WithOne(a => a.Produto)

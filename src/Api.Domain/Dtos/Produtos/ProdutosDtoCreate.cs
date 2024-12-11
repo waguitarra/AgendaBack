@@ -1,10 +1,8 @@
+using Api.Domain.Dtos.ImagensP;
+using Domain.Dtos.Agente;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Api.Domain.Dtos.ImagensP;
-using Api.Domain.Dtos.MensagensP;
-using Api.Domain.Entities;
-using Domain.Dtos.Agente;
 
 namespace Api.Domain.Dtos.Protudos
 {
@@ -26,6 +24,10 @@ namespace Api.Domain.Dtos.Protudos
         public Guid ClienteUsuarioId { get; set; }
         public string Mapa { get; set; }
         public string Endereco { get; set; }
+        public string CEP { get; set; }
+        public string Numero { get; set; }
+        public string Estado { get; set; }
+        public string Pais { get; set; }
         public IEnumerable<AgenteDto> Agente { get; set; }
 
     }
