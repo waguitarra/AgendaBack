@@ -26,5 +26,14 @@ namespace Api.Data.Implementations
                 .ToListAsync();
             return response;
         }
+
+        public async Task<IEnumerable<AgenteEntity>> GetAllUserClientesProdutoId(Guid ProdutoId)
+        {
+            var response = await _dataset
+                .Include(p => p.Produto) // Inclui a entidade User
+                .Where(p => p.Produto.Id == ProdutoId && p.Ativo) // Filtra por UserId e Ativo
+                .ToListAsync();
+            return response;
+        }
     }
 }

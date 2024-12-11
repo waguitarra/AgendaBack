@@ -10,5 +10,7 @@ namespace Api.Domain.Repository
     public interface IUAgenteRepository : IRepository<AgenteEntity>
     {
         Task<IEnumerable<AgenteEntity>> GetAllUserClientes(Guid userId);
+
+        Task<IEnumerable<AgenteEntity>> GetAllUserClientesProdutoId(Guid ProdutoId);
     }
 }

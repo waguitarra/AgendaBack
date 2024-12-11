@@ -121,7 +121,7 @@ namespace Api.Service.Services
                     {
                         var userLogado = await _userRepositorio.GetProdutoPorUserId((Guid)userId);
                         var UserProduto = await _userRepositorio.GetProdutoPorUserId(listEntity.UserId);
-                        listEntity.Agente = await _uagenteRepository.GetAllUserClientes(userId.Value);
+                        listEntity.Agente = await _uagenteRepository.GetAllUserClientesProdutoId(id);
 
                         if (userLogado == null)
                         {
