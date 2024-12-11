@@ -117,10 +117,11 @@ namespace Api.Service.Services
                         listEntity.CurtidasTotal = 0;
                     }
 
-                    if (userId != null)
+                    if (userId.HasValue)
                     {
                         var userLogado = await _userRepositorio.GetProdutoPorUserId((Guid)userId);
                         var UserProduto = await _userRepositorio.GetProdutoPorUserId(listEntity.UserId);
+                        listEntity.Agente = await _uagenteRepository.GetAllUserClientes(userId.Value);
 
                         if (userLogado == null)
                         {
@@ -503,7 +504,7 @@ namespace Api.Service.Services
             if (listaCategoriasServico.km == 0)
                 listaCategoriasServico.km = 40440;
 
-            var listEntity = await _repository.GetAllPesquisaIdioma(userId);
+            var listEntity = await _repository.GetAllPesquisaIdioma(listaCategoriasServico.userId.Value);
             List<ProdutosEntity> ListResult = new List<ProdutosEntity>();
 
             // Filtro por TipoServicoId
