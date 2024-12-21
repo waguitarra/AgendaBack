@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20241105175119_AlterCliente")]
-    partial class AlterCliente
+    [Migration("20241220135028_inicio")]
+    partial class inicio
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -490,6 +490,9 @@ namespace Data.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("CEP")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<Guid>("CategoriaId")
                         .HasColumnType("char(36)");
 
@@ -513,6 +516,9 @@ namespace Data.Migrations
                     b.Property<string>("Endereco")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("Estado")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("Idioma")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -526,6 +532,12 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(40) CHARACTER SET utf8mb4")
                         .HasMaxLength(40);
+
+                    b.Property<string>("Numero")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Pais")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<Guid>("TipoServicoId")
                         .HasColumnType("char(36)");
@@ -810,6 +822,36 @@ namespace Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Agente");
+                });
+
+            modelBuilder.Entity("Domain.Entities.AgenteProdutosEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("AgenteId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("CreateAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("ProdutoId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgenteId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("AgenteProduto");
                 });
 
             modelBuilder.Entity("Domain.Entities.ClienteEntity", b =>

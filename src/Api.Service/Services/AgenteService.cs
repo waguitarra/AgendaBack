@@ -33,7 +33,15 @@ namespace Api.Service.Services
         public async Task<IEnumerable<AgenteDto>> GetAll(string idioma, Guid UserId)
         {
             var listEntity = await _repository.SelectAsync();
-            listEntity = listEntity.Where(p => p.Ativo == true && p.UserId == UserId && p.ProdutoId == null).ToList();
+            listEntity = listEntity.Where(p => p.Ativo == true && p.UserId == UserId).ToList();
+
+            return _mapper.Map<IEnumerable<AgenteDto>>(listEntity);
+        }
+
+        public async Task<IEnumerable<AgenteDto>> GetAllAgenteProduto(Guid produtoId)
+        {
+            var listEntity = await _repository.SelectAsync();
+            listEntity = listEntity.Where(p => p.Ativo == true && p.ProdutoId == produtoId).ToList();
 
             return _mapper.Map<IEnumerable<AgenteDto>>(listEntity);
         }
@@ -97,6 +105,23 @@ namespace Api.Service.Services
             return false;
    
         }
+
+        public async Task<bool> DeleteMaster(Guid id)
+        {
+            var agente = await Get(id);
+            if (agente != null)
+            {
+                // Alterna o valor do campo Ativo
+                agente.Ativo = !agente.Ativo;
+
+                // Atualiza o agente no repositório
+                await _repository.UpdateAsync(_mapper.Map<AgenteEntity>(agente));
+                return true;
+            }
+
+            return false;
+        }
+
 
     }
 }

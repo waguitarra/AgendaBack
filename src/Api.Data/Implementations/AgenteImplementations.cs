@@ -21,6 +21,7 @@ namespace Api.Data.Implementations
         public async Task<IEnumerable<AgenteEntity>> GetAllUserClientes(Guid userId)
         {
             var response = await _dataset
+                .AsNoTracking() // Adicione isso para evitar rastreamento
                 .Include(p => p.User) // Inclui a entidade User
                 .Where(p => p.User.Id == userId && p.Ativo) // Filtra por UserId e Ativo
                 .ToListAsync();
@@ -30,6 +31,7 @@ namespace Api.Data.Implementations
         public async Task<IEnumerable<AgenteEntity>> GetAllUserClientesProdutoId(Guid ProdutoId)
         {
             var response = await _dataset
+                .AsNoTracking() // Adicione isso para evitar rastreamento
                 .Include(p => p.Produto) // Inclui a entidade User
                 .Where(p => p.Produto.Id == ProdutoId && p.Ativo) // Filtra por UserId e Ativo
                 .ToListAsync();

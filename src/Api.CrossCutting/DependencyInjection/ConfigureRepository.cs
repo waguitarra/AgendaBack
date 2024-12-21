@@ -19,6 +19,7 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddScoped<IUUserRepository, UserImplementation>();
             serviceCollection.AddScoped<IUCategoriaRepository, CategoriaImplementation>();
             serviceCollection.AddScoped<IUAgenteRepository, AgenteImplementation>();
+            serviceCollection.AddScoped<IUAgenteProdutoRepository, AgenteProdutoImplementations>();
             serviceCollection.AddScoped<IUClienteRepository, ClienteImplementation>();
             serviceCollection.AddScoped<IUImagensPRepository, ImagensPImplementation>();
             serviceCollection.AddScoped<IUProdutosRepository, ProdutosImplementation>();

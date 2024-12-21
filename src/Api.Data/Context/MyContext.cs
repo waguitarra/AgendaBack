@@ -20,6 +20,7 @@ namespace Api.Data.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<CategoriaEntity>(new CategoriaMap().Configure);
+            modelBuilder.Entity<AgenteProdutosEntity>(new AgenteProdutoMap().Configure);
             modelBuilder.Entity<AgenteEntity>(new AgenteMap().Configure);
             modelBuilder.Entity<ClienteEntity>(new ClienteMap().Configure);
             modelBuilder.Entity<TipoServicoEntity>(new TipoServicoMap().Configure);

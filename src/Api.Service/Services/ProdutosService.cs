@@ -1,10 +1,12 @@
 using Api.Domain.Dtos.Protudos;
 using Api.Domain.Dtos.User;
 using Api.Domain.Entities;
+using Api.Domain.Interfaces.Services.Agente;
 using Api.Domain.Interfaces.Services.MensagensP;
 using Api.Domain.Interfaces.Services.Produtos;
 using Api.Domain.Repository;
 using AutoMapper;
+using Domain.Dtos.Agente;
 using Domain.Dtos.EmailsNewsletter;
 using Domain.Dtos.EnviarEmailDto;
 using Domain.Entities;
@@ -32,9 +34,11 @@ namespace Api.Service.Services
         private IUUserRepository _userRepositorio;
         private IUDenunciaProdutoUsuarioRepository _DenunciaProUsuario;
         private IUAgenteRepository _uagenteRepository;
+        private IUAgenteProdutoRepository _uagenteProtudoRepository;
         private IMapper _mapper;
         private IMensagensPService _mensagensP;
         private IEmailsNewsletterService _emailsNewsletterService;
+        private IAgenteService _agenteService;
         private Guid IdProduto;
         private static IEnumerable<UserEntity> userEmailResponse;
         private static IEnumerable<ProdutosEntity> produtoEmailResponse;
@@ -54,6 +58,8 @@ namespace Api.Service.Services
                             , IEmailsNewsletterService emailsNewsletterService
                             , IConfiguration configuration
                             , IUAgenteRepository uagenteRepository
+                            , IAgenteService agenteService
+                            , IUAgenteProdutoRepository uagenteProtudoRepository
                             )
         {
             _repository = repository;
@@ -65,6 +71,8 @@ namespace Api.Service.Services
             _emailsNewsletterService = emailsNewsletterService;
             _configuration = configuration;
             _uagenteRepository = uagenteRepository;
+            _agenteService = agenteService;
+            _uagenteProtudoRepository = uagenteProtudoRepository;
         }
 
         public async Task<bool> Delete(Guid id)
@@ -80,86 +88,34 @@ namespace Api.Service.Services
 
         public async Task<ProdutosDto> Get(Guid id, Guid? userId, double lat, double longi, string idioma)
         {
-            var translatorService = new TranslationService();
+            // Busca o produto existente no banco de dados
+            var produtoExistente = await _repository.GetPesquisaProduto(id);
 
-            var listEntity = await _repository.GetPesquisaProduto(id);
-
-            if (userId != null)
+            if (produtoExistente == null)
             {
-                Guid _userId = (Guid)userId;
-                var denuncias = await _DenunciaProUsuario.GetUserProdutos(_userId, id);
-
-                if (denuncias != null)
-                {
-                    return null;
-                }
-
-                if (listEntity != null)
-                {
-
-                    if (listEntity.MensagensP != null)
-                        foreach (var item in listEntity.MensagensP)
-                        {
-                            await _userRepositorio.GetCurtidasPPorUserId(item.UserId);
-                        }
-
-                    listEntity.MensagensP = listEntity.MensagensP.OrderBy(p => p.CreateAt);
-      
-                    await _repository.GetCompleteByUser(listEntity.UserId);
-
-                    if (listEntity.CurtidasP != null)
-                    {
-                        listEntity.CurtidasP = listEntity.CurtidasP.AsQueryable().Where(p => p.Curtidas == true).ToList();
-                        listEntity.CurtidasTotal = listEntity.CurtidasP.Count();
-                    }
-                    else
-                    {
-                        listEntity.CurtidasTotal = 0;
-                    }
-
-                    if (userId.HasValue)
-                    {
-                        var userLogado = await _userRepositorio.GetProdutoPorUserId((Guid)userId);
-                        var UserProduto = await _userRepositorio.GetProdutoPorUserId(listEntity.UserId);
-                        listEntity.Agente = await _uagenteRepository.GetAllUserClientesProdutoId(id);
-
-                        if (userLogado == null)
-                        {
-                            if (lat != 0 && longi != 0 && UserProduto.Latitude != 0 && UserProduto.Longitude != 0)
-                            {
-                                var kilometros = ObtenerDistancia(lat, longi, UserProduto.Latitude, UserProduto.Longitude);
-                                listEntity.KM = kilometros;
-                            }
-                        }
-
-                        else if (userLogado.Latitude != 0 && userLogado.Longitude != 0 && UserProduto.Latitude != 0 && UserProduto.Longitude != 0)
-                        {
-                            var kilometros = ObtenerDistancia(userLogado.Latitude, userLogado.Longitude, UserProduto.Latitude, UserProduto.Longitude);
-                            listEntity.KM = kilometros;
-                        }
-                    }
-                }
-
-                if (idioma != listEntity.Idioma)
-                {
-                    listEntity.Descricao = await translatorService.TranslateTextAsync(listEntity.Descricao, idioma);
-                    listEntity.NomeProduto = await translatorService.TranslateTextAsync(listEntity.NomeProduto, idioma);
-
-                    foreach (var item in listEntity.MensagensP)
-                    {
-                        item.Mensagens = await translatorService.TranslateTextAsync(item.Mensagens, idioma);
-                    }
-                }
-
-
-
-                return _mapper.Map<ProdutosDto>(listEntity);
+                throw new Exception("Produto não encontrado.");
             }
-            else if (listEntity != null)
-                return _mapper.Map<ProdutosDto>(listEntity);
 
-            return null;
+            // Obtém os agentes ativos associados ao produto a partir de AgenteProdutosEntity
+            var agentesProdutosAtuais = await _uagenteProtudoRepository.GetAllUserClientesProdutoId(id);
+
+            // Filtra os agentes ativos e obtém os detalhes completos dos agentes diretamente
+            var agentesAtivos = await _uagenteRepository.SelectAsync(); // Assume que isso retorna todos os agentes do banco
+            var agentesFiltrados = agentesAtivos
+                .Where(agente => agentesProdutosAtuais.Any(ap => ap.Ativo && ap.AgenteId == agente.Id))
+                .ToList();
+
+            // Atribui os agentes filtrados à propriedade produto.Agente
+            produtoExistente.Agente = agentesFiltrados;
+
+            // Mapeia a entidade de produto para o DTO
+            var produtoDto = _mapper.Map<ProdutosDto>(produtoExistente);
+
+            return produtoDto;
         }
+
+
+
 
         public async Task<IEnumerable<ProdutosDto>> GetAll(Guid userId)
         {
@@ -450,36 +406,119 @@ namespace Api.Service.Services
             {
                 _logge.Error($"errod: {e}");
             }
-
-
         }
 
-
-        public async Task<ProdutosDtoUpdateResult> Put(ProdutosDtoUpdate Produtos)
+        public async Task<ProdutosDtoUpdateResult> Put(ProdutosDtoUpdate ProdutosDto)
         {
-            var userLogado = await _userRepositorio.GetProdutoPorUserId(Produtos.UserId);
-            if (userLogado != null)
-            {          
-                var entity = _mapper.Map<ProdutosEntity>(Produtos);
-                var result = await _repository.UpdateAsync(entity);
-                var produtos = _mapper.Map<ProdutosDtoUpdateResult>(result);
-
-                var ImagensP = Produtos.ImagensP;
-                foreach (var item in ImagensP)
-                {               
-                    var entityImagensP = _mapper.Map<ImagensPEntity>(item);
-                    await _imagensPRepositorio.UpdateAsync(entityImagensP);
-
-                }
-
-                await _repository.GetCompleteByCategoria(Produtos.CategoriaId);
-                await _repository.GetCompleteByTipoServico(Produtos.TipoServicoId);
-
-                return _mapper.Map<ProdutosDtoUpdateResult>(result);
+            // Busca o produto existente no banco de dados
+            var produtoExistente = await _repository.GetPesquisaProduto(ProdutosDto.Id);
+            if (produtoExistente == null)
+            {
+                throw new Exception("Produto não encontrado.");
             }
-            return null;
 
+            // Busca todos os agentes associados ao produto na tabela AgenteProdutosEntity
+            var agentesProdutosAtuais = await _uagenteProtudoRepository.GetAllUserClientesProdutoId(ProdutosDto.Id);
+
+            // Identifica os agentes recebidos na DTO
+            var agentesRecebidos = ProdutosDto.Agente?.Select(a => a.Id).ToList() ?? new List<Guid>();
+
+            // Desativa agentes que não estão na DTO
+            await DesativarAgentesNaoIncluidos(agentesProdutosAtuais, agentesRecebidos);
+
+            // Ativa ou insere agentes da DTO
+            await AtivarOuInserirAgentes(ProdutosDto.Id, agentesProdutosAtuais, agentesRecebidos);
+
+            // Atualiza os campos do produto com base no DTO (exceto `produto.Agente`)
+            AtualizarProdutoComDto(produtoExistente, ProdutosDto);
+
+            // Atualiza o produto no banco
+            var produtoAtualizado = await _repository.UpdateAsync(produtoExistente);
+
+            // Retorna o resultado atualizado
+            var resultDto = _mapper.Map<ProdutosDtoUpdateResult>(produtoAtualizado);
+            return resultDto;
         }
+
+
+
+
+        private void AtualizarProdutoComDto(ProdutosEntity produto, ProdutosDtoUpdate dto)
+        {
+            produto.NomeProduto = dto.NomeProduto ?? produto.NomeProduto;
+            produto.CategoriaId = dto.CategoriaId != Guid.Empty ? dto.CategoriaId : produto.CategoriaId;
+            produto.UserId = dto.UserId != Guid.Empty ? dto.UserId : produto.UserId;
+            produto.Descricao = dto.Descricao ?? produto.Descricao;
+            produto.TipoServicoId = dto.TipoServicoId != Guid.Empty ? dto.TipoServicoId : produto.TipoServicoId;
+            produto.Idioma = dto.Idioma ?? produto.Idioma;
+            produto.Mapa = dto.Mapa ?? produto.Mapa;
+            produto.Endereco = dto.Endereco ?? produto.Endereco;
+            produto.CEP = dto.CEP ?? produto.CEP;
+            produto.Numero = dto.Numero ?? produto.Numero;
+            produto.Estado = dto.Estado ?? produto.Estado;
+            produto.Pais = dto.Pais ?? produto.Pais;
+            produto.UpdateAt = DateTime.UtcNow;
+        }
+
+
+
+
+        private async Task DesativarAgentesNaoIncluidos(
+        IEnumerable<AgenteProdutosEntity> agentesProdutosAtuais,
+        List<Guid> agentesRecebidos)
+        {
+            foreach (var agenteProdutoAtual in agentesProdutosAtuais)
+            {
+                if (!agentesRecebidos.Contains(agenteProdutoAtual.AgenteId) && agenteProdutoAtual.Ativo)
+                {
+                    agenteProdutoAtual.Ativo = false;
+                    agenteProdutoAtual.UpdateAt = DateTime.UtcNow;
+
+                    // Atualiza o registro existente para desativar
+                    await _uagenteProtudoRepository.UpdateAsync(agenteProdutoAtual);
+                }
+            }
+        }
+
+        private async Task AtivarOuInserirAgentes(
+            Guid produtoId,
+            IEnumerable<AgenteProdutosEntity> agentesProdutosAtuais,
+            List<Guid> agentesRecebidos)
+        {
+            foreach (var agenteId in agentesRecebidos)
+            {
+                var agenteProdutoAtual = agentesProdutosAtuais.FirstOrDefault(ap => ap.AgenteId == agenteId);
+
+                if (agenteProdutoAtual == null)
+                {
+                    // Insere um novo registro como ativo
+                    var novoRegistroAtivo = new AgenteProdutosEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        ProdutoId = produtoId,
+                        AgenteId = agenteId,
+                        Ativo = true,
+                        CreateAt = DateTime.UtcNow,
+                        UpdateAt = DateTime.UtcNow
+                    };
+                    await _uagenteProtudoRepository.InsertAsync(novoRegistroAtivo);
+                }
+                else if (!agenteProdutoAtual.Ativo)
+                {
+                    agenteProdutoAtual.Ativo = true;
+                    agenteProdutoAtual.UpdateAt = DateTime.UtcNow;
+
+                    // Atualiza o registro existente para ativar
+                    await _uagenteProtudoRepository.UpdateAsync(agenteProdutoAtual);
+                }
+            }
+        }
+
+
+
+
+
+
 
         public async Task<ProdutosDtoUpdateResult> PutServiceClienteUsuarioId(Guid id, Guid clienteUsuarioId)
         {

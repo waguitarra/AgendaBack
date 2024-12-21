@@ -129,6 +129,14 @@ namespace Api.CrossCutting.Mappings
             #endregion
 
             #region ImagensF
+            CreateMap<ImagensPDto, ImagensPEntity>().ReverseMap();
+            CreateMap<ImagensPDtoCreate, ImagensPEntity>().ReverseMap();
+            CreateMap<ImagensPDtoCreateResult, ImagensPEntity>().ReverseMap();
+            CreateMap<ImagensPDtoUpdateResult, ImagensPEntity>().ReverseMap();
+            CreateMap< ImagensPDtoUpdate, ImagensPEntity>().ReverseMap();
+            #endregion
+
+            #region ImagensF
             CreateMap<ImagensFDto, ImagensFEntity>().ReverseMap();
             CreateMap<ImagensFDtoCreate, ImagensFEntity>().ReverseMap();
             CreateMap<ImagensFDtoCreateResult, ImagensFEntity>().ReverseMap();
@@ -180,6 +188,11 @@ namespace Api.CrossCutting.Mappings
             #region Agente
             CreateMap<AgenteDto, AgenteEntity>().ReverseMap();
             #endregion
+
+            #region AgenteProdutos
+            CreateMap<AgentesProdutosDto, AgenteProdutosEntity>().ReverseMap();
+            #endregion
+
         }
     }
 }

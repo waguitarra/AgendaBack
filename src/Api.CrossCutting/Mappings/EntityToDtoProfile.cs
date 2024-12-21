@@ -192,6 +192,19 @@ namespace Api.CrossCutting.Mappings
             #endregion
 
             #region  ImagensF
+            CreateMap<ImagensPEntity, ImagensPDto>()
+                .ReverseMap();
+            CreateMap<ImagensPEntity, ImagensPDtoCreate>()
+               .ReverseMap();
+            CreateMap<ImagensPEntity, ImagensPDtoCreateResult>()
+               .ReverseMap();
+            CreateMap<ImagensPEntity, ImagensPDtoUpdateResult>()
+               .ReverseMap();
+            CreateMap<ImagensPEntity, ImagensPDtoUpdate>().ReverseMap();
+
+            #endregion
+
+            #region  ImagensF
             CreateMap<ImagensFEntity, ImagensFDto>()
                 .ReverseMap();
             CreateMap<ImagensFEntity, ImagensFDtoCreate>()
@@ -200,8 +213,6 @@ namespace Api.CrossCutting.Mappings
                .ReverseMap();
             CreateMap<ImagensFEntity, ImagensFDtoUpdateResult>()
                .ReverseMap();
-            CreateMap<ImagensFEntity, ImagensFDtoUpdateResult>()
-                .ReverseMap();
             #endregion
 
             #region  TermosResponsabilidades
@@ -284,6 +295,10 @@ namespace Api.CrossCutting.Mappings
 
             #region Agente
             CreateMap<AgenteEntity, AgenteDto>().ReverseMap();
+            #endregion
+
+            #region AgenteProdutos
+            CreateMap<AgenteProdutosEntity, AgentesProdutosDto>().ReverseMap();
             #endregion
         }
     }

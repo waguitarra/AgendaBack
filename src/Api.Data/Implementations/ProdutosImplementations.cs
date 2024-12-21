@@ -215,15 +215,10 @@ namespace Api.Data.Implementations
         public async Task<ProdutosEntity> GetPesquisaProduto(Guid id)
         {
             var response = await _dataset
-                .Include(p => p.DenunciaProdutoUsuario)
-                .Include(p => p.MensagensP)
-                    .ThenInclude(p => p.User)
                 .Include(p => p.User)
-                .Include(p => p.Agente)
                 .Include(p => p.ImagensP)
                 .Include(p => p.Categoria)
                 .Include(p => p.TipoServico)
-                .Include(p => p.CurtidasP)
                 .Where(p => p.Ativo == true && p.Id == id  &&  p.ImagensP.Any())
                 .FirstOrDefaultAsync();
             return response;

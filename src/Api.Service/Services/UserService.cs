@@ -256,10 +256,10 @@ namespace Api.Service.Services
                 return null;
             }
 
-            if (user.ImagemLogin.Length > 1000)
-                convert64 = user.ImagemLogin;
-            else
-                convert64 = ImageToBase64(user.ImagemLogin);
+            //if (user.ImagemLogin.Length > 1000)
+            //    convert64 = user.ImagemLogin;
+            //else
+            //    convert64 = ImageToBase64(user.ImagemLogin);
 
             //Aqui subimos tudo para servidor Imgur nossas imagens e temos o retorno da url
 
@@ -351,38 +351,83 @@ namespace Api.Service.Services
 
         private byte[] GetImage(string url)
         {
-            _logge.Debug($"url: {url}");
+            _logge.Debug($"Original URL: {url}");
+            url = url.Replace("\\", "/"); // Normaliza barras invertidas
+            _logge.Debug($"Normalized URL: {url}");
+
             Stream stream = null;
-            byte[] buf;
+            byte[] buf = null;
 
             try
             {
-                WebProxy myProxy = new WebProxy();
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-
-                HttpWebResponse response = (HttpWebResponse)req.GetResponse();
-                stream = response.GetResponseStream();
-
-                using (BinaryReader br = new BinaryReader(stream))
+                // Valida o formato do URL antes de tentar acessar
+                if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
                 {
-                    int len = (int)(response.ContentLength);
-                    buf = br.ReadBytes(len);
-                    br.Close();
+                    _logge.Error($"Invalid URL format: {url}");
+                    return null; // Retorna nulo se o URL for inválido
                 }
 
-                stream.Close();
-                response.Close();
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                using (HttpWebResponse response = (HttpWebResponse)req.GetResponse())
+                {
+                    if (response.StatusCode == HttpStatusCode.OK) // Apenas processa se o status for OK
+                    {
+                        _logge.Debug("Image fetched successfully.");
+                        stream = response.GetResponseStream();
+
+                        using (BinaryReader br = new BinaryReader(stream))
+                        {
+                            int len = (int)response.ContentLength;
+                            buf = br.ReadBytes(len);
+                        }
+                    }
+                    else
+                    {
+                        _logge.Warn($"Server responded with status: {response.StatusCode} ({response.StatusDescription})");
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                // Captura erros HTTP e loga sem interromper
+                if (webEx.Response is HttpWebResponse errorResponse)
+                {
+                    _logge.Error($"WebException: HTTP Status {errorResponse.StatusCode} - {errorResponse.StatusDescription}");
+                }
+                else
+                {
+                    _logge.Error($"WebException: {webEx.Message}");
+                }
             }
             catch (Exception ex)
             {
-                buf = null;
-
-                _logge.Error($"Erro : {ex}");
-                _logge.Error($"error  : {ex.Message}");
+                // Captura qualquer outro tipo de erro
+                _logge.Error($"Unhandled Exception: {ex.Message}");
+            }
+            finally
+            {
+                // Fecha stream mesmo em caso de falha
+                stream?.Close();
             }
 
-            return (buf);
+            if (buf == null)
+            {
+                _logge.Warn("Image could not be fetched. Returning default placeholder.");
+                // Opcional: Retornar uma imagem padrão (placeholder)
+                buf = GetPlaceholderImage();
+            }
+
+            return buf;
         }
+
+        // Método para fornecer uma imagem padrão, se necessário
+        private byte[] GetPlaceholderImage()
+        {
+            // Substitua pelo caminho real ou dados da imagem padrão
+            return File.ReadAllBytes("path/to/placeholder/image.jpg");
+        }
+
+
 
         public async Task<string> imgurUpload(string base64String)
         {

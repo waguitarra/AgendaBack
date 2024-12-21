@@ -8,6 +8,22 @@ namespace Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AgenteProduto",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreateAt = table.Column<DateTime>(nullable: true),
+                    UpdateAt = table.Column<DateTime>(nullable: true),
+                    Ativo = table.Column<bool>(nullable: false),
+                    AgenteId = table.Column<Guid>(nullable: false),
+                    ProdutoId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AgenteProduto", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categoria",
                 columns: table => new
                 {
@@ -37,7 +53,12 @@ namespace Data.Migrations
                     Email = table.Column<string>(nullable: true),
                     Telefone = table.Column<string>(nullable: true),
                     Descricao = table.Column<string>(nullable: true),
-                    UserId = table.Column<Guid>(nullable: false)
+                    DateStart = table.Column<DateTime>(nullable: true),
+                    DateEnd = table.Column<DateTime>(nullable: true),
+                    AgenteId = table.Column<Guid>(nullable: false),
+                    ProdutoId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false),
+                    json = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -295,7 +316,11 @@ namespace Data.Migrations
                     Idioma = table.Column<string>(nullable: true),
                     CurtidasTotal = table.Column<int>(nullable: false),
                     Mapa = table.Column<string>(nullable: true),
-                    Endereco = table.Column<string>(nullable: true)
+                    CEP = table.Column<string>(nullable: true),
+                    Endereco = table.Column<string>(nullable: true),
+                    Numero = table.Column<string>(nullable: true),
+                    Estado = table.Column<string>(nullable: true),
+                    Pais = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -605,6 +630,16 @@ namespace Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AgenteProduto_AgenteId",
+                table: "AgenteProduto",
+                column: "AgenteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AgenteProduto_ProdutoId",
+                table: "AgenteProduto",
+                column: "ProdutoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categoria_Ativo",
                 table: "Categoria",
                 column: "Ativo");
@@ -911,6 +946,9 @@ namespace Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Agente");
+
+            migrationBuilder.DropTable(
+                name: "AgenteProduto");
 
             migrationBuilder.DropTable(
                 name: "Cliente");
