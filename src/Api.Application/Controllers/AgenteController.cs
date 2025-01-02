@@ -139,6 +139,34 @@ namespace Api.Application.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
+
+
+        [HttpGet("produto/{produtoId}/agentes")]
+        public async Task<ActionResult> GetAllAgenteProduto(Guid produtoId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var result = await _service.GetAllAgenteProduto(produtoId);
+                if (result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("Nenhum agente encontrado para o produto especificado.");
+                }
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
     }
 
 }

@@ -1,4 +1,5 @@
 using Api.Domain.Interfaces.Services.Agente;
+using Api.Domain.Interfaces.Services.Produtos;
 using Api.Domain.Repository;
 using AutoMapper;
 using Domain.Dtos.Agente;
@@ -16,12 +17,14 @@ namespace Api.Service.Services
 
         private readonly IMapper _mapper;
         private IUUserRepository _userRepositorio;
+        public IUAgenteProdutoRepository _agenteProdutoRepository { get; set; }
 
-        public AgenteService(IUAgenteRepository repository, IMapper mapper, IUUserRepository userRepositorio)
+        public AgenteService(IUAgenteRepository repository, IMapper mapper, IUUserRepository userRepositorio, IUAgenteProdutoRepository agenteProdutoRepository)
         {
             _repository = repository;
             _mapper = mapper;
             _userRepositorio = userRepositorio;
+            _agenteProdutoRepository = agenteProdutoRepository;
         }
 
         public async Task<AgenteDto> Get(Guid id)
@@ -40,11 +43,28 @@ namespace Api.Service.Services
 
         public async Task<IEnumerable<AgenteDto>> GetAllAgenteProduto(Guid produtoId)
         {
-            var listEntity = await _repository.SelectAsync();
-            listEntity = listEntity.Where(p => p.Ativo == true && p.ProdutoId == produtoId).ToList();
+            // Obtém todas as associações de AgenteProduto com base no produtoId
+            var agenteProdutos = await _agenteProdutoRepository.GetAllUserClientesProdutoId(produtoId);
 
-            return _mapper.Map<IEnumerable<AgenteDto>>(listEntity);
+            if (agenteProdutos == null || !agenteProdutos.Any())
+            {
+                return Enumerable.Empty<AgenteDto>(); // Retorna lista vazia se nenhum agente for encontrado
+            }
+
+            // Filtra os IDs de agentes encontrados em agenteProdutos
+            var agenteIds = agenteProdutos.Select(ap => ap.AgenteId).Distinct().ToList();
+
+            // Busca todos os agentes
+            var allAgentes = await _repository.SelectAsync();
+
+            // Filtra os agentes manualmente com base nos IDs encontrados
+            var agentesFiltrados = allAgentes.Where(a => agenteIds.Contains(a.Id)).ToList();
+
+            // Retorna os agentes mapeados para DTO
+            return _mapper.Map<IEnumerable<AgenteDto>>(agentesFiltrados);
         }
+
+
 
         public async Task<AgenteDto> Post(AgenteDto agenteDto)
         {

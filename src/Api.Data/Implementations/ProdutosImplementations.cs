@@ -60,7 +60,10 @@ namespace Api.Data.Implementations
 
         public async Task<ProdutosEntity> GetCompleteById(Guid ProdutosId)
         {
-            return await _dataset.FirstOrDefaultAsync(c => c.Id.Equals(ProdutosId));
+
+            return await _dataset
+                .Include(p => p.Agente)
+                .FirstOrDefaultAsync(c => c.Id.Equals(ProdutosId));
         }
 
         public async Task<IEnumerable<ProdutosEntity>> GetAllMyProduto(Guid userId)

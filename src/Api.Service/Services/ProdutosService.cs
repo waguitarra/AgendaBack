@@ -314,15 +314,24 @@ namespace Api.Service.Services
                     throw new ArgumentException("Não foi possível continuar com a Postagem no Imgur.");
                 }
 
-                foreach (var agente in Produtos.Agente)
+                if (Produtos.Agente != null && Produtos.Agente.Any())
                 {
-                    var agenteEntity = _mapper.Map<AgenteEntity>(agente);
-                    agenteEntity.ProdutoId = produtoEntity.Id;
+                    foreach (var agente in Produtos.Agente)
+                    {
+                        // Mapeia para AgenteProdutosEntity
+                        var agenteProduto = new AgenteProdutosEntity
+                        {
+                            Id = Guid.NewGuid(),
+                            ProdutoId = produtoEntity.Id,
+                            AgenteId = agente.Id,
+                            Ativo = true,
+                            CreateAt = DateTime.UtcNow,
+                            UpdateAt = DateTime.UtcNow
+                        };
 
-                    // Gera um novo ID para evitar duplicações se o ID não for auto-incremento
-                    agenteEntity.Id = Guid.NewGuid();
-
-                    await _uagenteRepository.InsertAsync(agenteEntity);
+                        // Insere no AgenteProdutosEntity
+                        await _uagenteProtudoRepository.InsertAsync(agenteProduto);
+                    }
                 }
 
                 // Retorna apenas o produto inserido uma vez, sem informações de imagens
