@@ -17,14 +17,16 @@ namespace Api.Service.Services
 
         private readonly IMapper _mapper;
         private IUUserRepository _userRepositorio;
+        private IUProdutosRepository _produtosRepositorio;
         public IUAgenteProdutoRepository _agenteProdutoRepository { get; set; }
 
-        public AgenteService(IUAgenteRepository repository, IMapper mapper, IUUserRepository userRepositorio, IUAgenteProdutoRepository agenteProdutoRepository)
+        public AgenteService(IUAgenteRepository repository, IMapper mapper, IUUserRepository userRepositorio, IUAgenteProdutoRepository agenteProdutoRepository, IUProdutosRepository produtosRepositorio)
         {
             _repository = repository;
             _mapper = mapper;
             _userRepositorio = userRepositorio;
             _agenteProdutoRepository = agenteProdutoRepository;
+            _produtosRepositorio = produtosRepositorio;
         }
 
         public async Task<AgenteDto> Get(Guid id)
@@ -41,14 +43,22 @@ namespace Api.Service.Services
             return _mapper.Map<IEnumerable<AgenteDto>>(listEntity);
         }
 
-        public async Task<IEnumerable<AgenteDto>> GetAllAgenteProduto(Guid produtoId)
+        public async Task<IEnumerable<ProdutoAgenteDto>> GetAllAgenteProduto(Guid produtoId)
         {
+            // Obtém o produto com o ID fornecido
+            var produto = await _produtosRepositorio.GetPesquisaProduto(produtoId);
+
+            if (produto == null)
+            {
+                throw new ArgumentException("Produto não encontrado.");
+            }
+
             // Obtém todas as associações de AgenteProduto com base no produtoId
             var agenteProdutos = await _agenteProdutoRepository.GetAllUserClientesProdutoId(produtoId);
 
             if (agenteProdutos == null || !agenteProdutos.Any())
             {
-                return Enumerable.Empty<AgenteDto>(); // Retorna lista vazia se nenhum agente for encontrado
+                return Enumerable.Empty<ProdutoAgenteDto>(); // Retorna lista vazia se nenhum agente for encontrado
             }
 
             // Filtra os IDs de agentes encontrados em agenteProdutos
@@ -60,9 +70,29 @@ namespace Api.Service.Services
             // Filtra os agentes manualmente com base nos IDs encontrados
             var agentesFiltrados = allAgentes.Where(a => agenteIds.Contains(a.Id)).ToList();
 
-            // Retorna os agentes mapeados para DTO
-            return _mapper.Map<IEnumerable<AgenteDto>>(agentesFiltrados);
+            // Mapeia os agentes para ProdutoAgenteDto e preenche as informações do produto
+            var resultado = agentesFiltrados.Select(agente => new ProdutoAgenteDto
+            {
+                Id = agente.Id,
+                Nome = agente.Nome,
+                Email = agente.Email,
+                Imagem = agente.Imagem,
+                NomeProduto = produto.NomeProduto,
+                Ativo = agente.Ativo,
+                TipoCategoria = produto.Categoria?.TipoCategoria ?? string.Empty,
+                TipoServico = produto.TipoServico?.TipoCategoria ?? string.Empty,
+                Endereco = produto.Endereco,
+                CEP = produto.CEP,
+                Numero = produto.Numero,
+                Estado = produto.Estado,
+                Pais = produto.Pais,
+                UserId = produto.UserId,
+                ProdutoId = produto.Id
+            });
+
+            return resultado;
         }
+
 
 
 
