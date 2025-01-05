@@ -1,4 +1,5 @@
 ﻿using Api.Domain.Entities;
+using Domain.Entities.AgendaAgente;
 using System;
 
 namespace Domain.Entities
@@ -15,6 +16,10 @@ namespace Domain.Entities
         public Guid ProdutoId { get; set; }
         public Guid UserId { get; set; }
         public string json { get; set;}
+
+        public Guid AgendaAgenteId { get; set; } // Chave estrangeira
+        public AgendaAgenteEntity AgendaAgente { get; set; } // Propriedade de navegação
     }
+
 
 }

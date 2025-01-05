@@ -1,4 +1,5 @@
 ﻿using Api.Domain.Entities;
+using Domain.Entities.AgendaAgente;
 using System;
 
 namespace Domain.Entities
@@ -14,6 +15,7 @@ namespace Domain.Entities
         public UserEntity User { get; set; }
         public Guid? ProdutoId { get; set; }
         public ProdutosEntity Produto { get; set; }
+        public AgendaAgenteEntity AgendaAgente { get; set; }
 
     }
 }
