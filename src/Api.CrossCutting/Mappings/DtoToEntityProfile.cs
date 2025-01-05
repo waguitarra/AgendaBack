@@ -21,6 +21,7 @@ using Api.Domain.Dtos.CurtidasConteudosP;
 using Domain.Dtos.Client;
 using Domain.Dtos.Agente;
 using Domain.Dtos.AgenteProduto;
+using Domain.Dtos.AgendaAgente;
 
 namespace Api.CrossCutting.Mappings
 {
@@ -193,6 +194,12 @@ namespace Api.CrossCutting.Mappings
             #region AgenteProdutos
             CreateMap<AgentesProdutosDto, AgenteProdutosEntity>().ReverseMap();
             #endregion
+
+            #region AgendaAgente
+            CreateMap<AgendaAgenteDto, AgendaAgenteEntity>().ReverseMap();
+            #endregion
+
+            
 
         }
     }

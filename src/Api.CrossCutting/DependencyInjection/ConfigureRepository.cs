@@ -19,6 +19,7 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddScoped<IUUserRepository, UserImplementation>();
             serviceCollection.AddScoped<IUCategoriaRepository, CategoriaImplementation>();
             serviceCollection.AddScoped<IUAgenteRepository, AgenteImplementation>();
+            serviceCollection.AddScoped<IUAgendaAgenteRepository, AgendaAgenteImplementation>();
             serviceCollection.AddScoped<IUAgenteProdutoRepository, AgenteProdutoImplementations>();
             serviceCollection.AddScoped<IUClienteRepository, ClienteImplementation>();
             serviceCollection.AddScoped<IUImagensPRepository, ImagensPImplementation>();
@@ -38,6 +39,7 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddScoped<IUConteudosRepository, ConteudosImplementation>();
             serviceCollection.AddScoped<IUImagensConteudosRepository, ImagensConteudosImplementation>();
             serviceCollection.AddScoped<IUCurtidasConteudosRepository, CurtidasConteudosImplementations>();
+
 
             if (Environment.GetEnvironmentVariable("DATABASE").ToLower() == "SQLSERVER".ToLower())
             {

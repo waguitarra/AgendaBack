@@ -49,7 +49,8 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddTransient<ICurtidasConteudosService, CurtidasConteudosService>();
             serviceCollection.AddTransient<IGoogleCalendarService, GoogleCalendarService>();
             serviceCollection.AddTransient<IAgenteService, AgenteService>();
-                            
+            serviceCollection.AddTransient<IAgendaAgenteService, AgendaAgenteService>();
+
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using System;
+﻿using System;
 
 namespace Domain.Dtos.AgendaAgente
 {
@@ -8,10 +7,10 @@ namespace Domain.Dtos.AgendaAgente
         public Guid Id { get; set; }
 
         public Guid AgenteId { get; set; }
-        public AgenteEntity Agente { get; set; }
+        //public AgenteEntity Agente { get; set; }
 
         public Guid ClienteId { get; set; }
-        public ClienteEntity Cliente { get; set; }
+        //public ClienteEntity Cliente { get; set; }
 
         public DateTime Dia { get; set; }
         public string HorarioStart { get; set; }
