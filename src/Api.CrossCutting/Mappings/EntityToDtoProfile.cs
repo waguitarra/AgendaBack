@@ -20,6 +20,7 @@ using Domain.Dtos.Conteudo;
 using Api.Domain.Dtos.CurtidasConteudosP;
 using Domain.Dtos.Client;
 using Domain.Dtos.Agente;
+using Domain.Dtos.AgenteProduto;
 
 namespace Api.CrossCutting.Mappings
 {

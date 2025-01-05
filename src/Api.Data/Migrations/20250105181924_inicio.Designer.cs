@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20250105160059_AddAgendaAgenteRelationships")]
-    partial class AddAgendaAgenteRelationships
+    [Migration("20250105181924_inicio")]
+    partial class inicio
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,48 @@ namespace Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("AgendaAgenteEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("AgenteId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Cancelado")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CreateAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DataCancelamento")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("Dia")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("HorarioEnd")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("HorarioStart")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgenteId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("AgendaAgenteEntity");
+                });
 
             modelBuilder.Entity("Api.Domain.Entities.CategoriaEntity", b =>
                 {
@@ -509,15 +551,31 @@ namespace Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasColumnType("varchar(400) CHARACTER SET utf8mb4")
-                        .HasMaxLength(400);
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("Domingo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("DomingoEndHora")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("DomingoStartHora")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Endereco")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Estado")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("FeriadoEndHora")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("FeriadoStartHora")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("Feriados")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Idioma")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -537,6 +595,27 @@ namespace Data.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Pais")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("PauseEndHora")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("PauseStartHora")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("Sabado")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SabadoEndHorario")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("SabadoStartHorario")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("SemanaEndHora")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("SemanaStartHora")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<Guid>("TipoServicoId")
@@ -774,38 +853,6 @@ namespace Data.Migrations
                     b.ToTable("UserFornecedor");
                 });
 
-            modelBuilder.Entity("Domain.Entities.AgendaAgente.AgendaAgenteEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("AgenteId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("Cancelado")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("CreateAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("DataCancelamento")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("Dia")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AgenteId")
-                        .IsUnique();
-
-                    b.ToTable("AgendaAgenteEntity");
-                });
-
             modelBuilder.Entity("Domain.Entities.AgenteEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -829,6 +876,12 @@ namespace Data.Migrations
 
                     b.Property<string>("Nome")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("PauseEndComer")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("PauseStartComer")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<Guid?>("ProdutoId")
                         .HasColumnType("char(36)");
@@ -892,9 +945,6 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("AgendaAgenteId")
-                        .HasColumnType("char(36)");
-
                     b.Property<Guid>("AgenteId")
                         .HasColumnType("char(36)");
 
@@ -932,8 +982,6 @@ namespace Data.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AgendaAgenteId");
 
                     b.HasIndex("Email");
 
@@ -1117,6 +1165,21 @@ namespace Data.Migrations
                     b.ToTable("TermosResponsabilidades");
                 });
 
+            modelBuilder.Entity("AgendaAgenteEntity", b =>
+                {
+                    b.HasOne("Domain.Entities.AgenteEntity", "Agente")
+                        .WithMany("AgendaAgente")
+                        .HasForeignKey("AgenteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.ClienteEntity", "Cliente")
+                        .WithMany("AgendaAgente")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Api.Domain.Entities.ControleRigadoresEntity", b =>
                 {
                     b.HasOne("Api.Domain.Entities.UserEntity", "User")
@@ -1232,15 +1295,6 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.AgendaAgente.AgendaAgenteEntity", b =>
-                {
-                    b.HasOne("Domain.Entities.AgenteEntity", "Agente")
-                        .WithOne("AgendaAgente")
-                        .HasForeignKey("Domain.Entities.AgendaAgente.AgendaAgenteEntity", "AgenteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Entities.AgenteEntity", b =>
                 {
                     b.HasOne("Api.Domain.Entities.ProdutosEntity", "Produto")
@@ -1251,15 +1305,6 @@ namespace Data.Migrations
                     b.HasOne("Api.Domain.Entities.UserEntity", "User")
                         .WithMany("Agente")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.ClienteEntity", b =>
-                {
-                    b.HasOne("Domain.Entities.AgendaAgente.AgendaAgenteEntity", "AgendaAgente")
-                        .WithMany("Clientes")
-                        .HasForeignKey("AgendaAgenteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

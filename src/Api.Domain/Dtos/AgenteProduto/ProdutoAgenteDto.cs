@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain.Dtos.Agente
+namespace Domain.Dtos.AgenteProduto
 {
     public class ProdutoAgenteDto
     {

@@ -1,4 +1,4 @@
-use agendamento;
+use AgentesAgendamento;
 
 INSERT INTO TipoServico (Id, CreateAt, UpdateAt, TipoCategoria, Descricao, UrlImagens,  Tipo, Ativo, Pais) 
 VALUES

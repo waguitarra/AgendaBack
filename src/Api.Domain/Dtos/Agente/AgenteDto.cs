@@ -12,5 +12,8 @@ namespace Domain.Dtos.Agente
         public string Descricao { get; set; }
         public Guid UserId { get; set; }
         public Guid? ProdutoId { get; set; }
+
+        public string PauseStartComer { get; set; }
+        public string PauseEndComer { get; set; }
     }
 }

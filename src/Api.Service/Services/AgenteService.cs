@@ -3,6 +3,7 @@ using Api.Domain.Interfaces.Services.Produtos;
 using Api.Domain.Repository;
 using AutoMapper;
 using Domain.Dtos.Agente;
+using Domain.Dtos.AgenteProduto;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;

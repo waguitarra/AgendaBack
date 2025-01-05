@@ -8,7 +8,7 @@ namespace Api.Data.Context
         public MyContext CreateDbContext(string[] args)
         {
             //Usado para Criar as Migrações
-            var connectionString = "Server=localhost;userid=semente;password=w@g3691715Figueiredo;database=agendamento";
+            var connectionString = "Server=localhost;userid=semente;password=w@g3691715Figueiredo;database=AgentesAgendamento";
             //var connectionString = "Server=95.111.233.31;PORT=3306;userid=semente;password=w@g3691715Figueiredo;database=trocasementes";
             //var connectionString = "Server=.\\SQLEXPRESS2017;Initial Catalog=dbapi;MultipleActiveResultSets=true;User ID=sa;Password=mudar@123";
             var optionsBuilder = new DbContextOptionsBuilder<MyContext>();

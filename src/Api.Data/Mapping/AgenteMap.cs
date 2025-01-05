@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-using Domain.Entities.AgendaAgente;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -29,12 +28,13 @@ namespace Data.Mapping
                    .HasForeignKey(a => a.ProdutoId)
                    .IsRequired(false)
                    .OnDelete(DeleteBehavior.SetNull);
+ 
+            // Relacionamento com AgendaAgenteEntity (um para muitos)
+            builder.HasMany(a => a.AgendaAgente)
+                   .WithOne(ag => ag.Agente)
+                   .HasForeignKey(ag => ag.AgenteId) // Chave estrangeira em AgendaAgenteEntity
+                   .OnDelete(DeleteBehavior.Restrict); // Impede exclusão em cascata
 
-            // Relacionamento com AgendaAgenteEntity (um para um)
-            builder.HasOne(a => a.AgendaAgente)
-                             .WithOne(ag => ag.Agente)
-                             .HasForeignKey<AgendaAgenteEntity>(ag => ag.AgenteId) // Chave estrangeira está na AgendaAgenteEntity
-                             .OnDelete(DeleteBehavior.Restrict); // Impede exclusão em cascata
 
         }
     }

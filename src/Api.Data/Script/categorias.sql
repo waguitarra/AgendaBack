@@ -1,10 +1,10 @@
 
-use agendamento;
+use AgentesAgendamento;
 
 
 SELECT * FROM agendamento.categoria;
 
-INSERT INTO agendamento.categoria (Id, CreateAt, UpdateAt, TipoCategoria, Descricao, UrlImagens, Ativo, Tipo, Pais)
+INSERT INTO categoria (Id, CreateAt, UpdateAt, TipoCategoria, Descricao, UrlImagens, Ativo, Tipo, Pais)
 VALUES
 (UUID(), NOW(), NOW(), 'Médico', 'Clínicas Médicas', 'url_medico.jpg', 1, 1, 'br'),
 (UUID(), NOW(), NOW(), 'Médico', 'Clínicas Médicas', 'url_medico.jpg', 1, 1, 'es'),
@@ -37,7 +37,7 @@ VALUES
 (UUID(), NOW(), NOW(), 'Instructor de Yoga', 'Centros de Yoga y Meditación', 'url_instrutor_yoga.jpg', 1, 10, 'es');
 
 
-INSERT INTO agendamento.categoria (Id, CreateAt, UpdateAt, TipoCategoria, Descricao, UrlImagens, Ativo, Tipo, Pais)
+INSERT INTO categoria (Id, CreateAt, UpdateAt, TipoCategoria, Descricao, UrlImagens, Ativo, Tipo, Pais)
 VALUES
 (UUID(), NOW(), NOW(), 'Cabeleireiro e Barbeiro', 'Cabeleireiro e Barbeiro', 'url_cabeleireiro_barbeiro.jpg', 1, 11, 'br'),
 (UUID(), NOW(), NOW(), 'Peluquero y Barbero', 'Peluquería y Barbería', 'url_peluquero_barbero.jpg', 1, 11, 'es'),

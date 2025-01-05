@@ -34,7 +34,7 @@ namespace application
         {
             //if (_environment.IsEnvironment("Testing"))
             //{
-            Environment.SetEnvironmentVariable("DB_CONNECTION", "Persist Security Info=True;Server=localhost;userid=semente;password=w@g3691715Figueiredo;database=agendamento");
+            Environment.SetEnvironmentVariable("DB_CONNECTION", "Persist Security Info=True;Server=localhost;userid=semente;password=w@g3691715Figueiredo;database=AgentesAgendamento");
             //Environment.SetEnvironmentVariable("DB_CONNECTION", "Persist Security Info=True;Server=95.111.233.31;PORT=3306;userid=semente;password=w@g3691715Figueiredo;database=trocasementes");
             Environment.SetEnvironmentVariable("DATABASE", "MYSQL");
             Environment.SetEnvironmentVariable("MIGRATION", "APLICAR");

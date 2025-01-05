@@ -1,4 +1,5 @@
 using Domain.Dtos.Agente;
+using Domain.Dtos.AgenteProduto;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

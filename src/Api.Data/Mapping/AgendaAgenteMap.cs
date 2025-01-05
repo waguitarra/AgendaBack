@@ -1,5 +1,4 @@
-﻿using Domain.Entities.AgendaAgente;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.Mapping
@@ -11,22 +10,19 @@ namespace Data.Mapping
             // Define a tabela
             builder.ToTable("AgendaAgente");
 
-            // Chave primária
+            // Define a chave primária
             builder.HasKey(a => a.Id);
 
-            // Ignora a propriedade Horarios
-            builder.Ignore(a => a.Horarios);
-
-            // Relacionamento um para um com AgenteEntity
+            // Relacionamento muitos para um com AgenteEntity
             builder.HasOne(a => a.Agente)
-                   .WithOne(ae => ae.AgendaAgente) // Propriedade correta em AgenteEntity
-                   .HasForeignKey<AgendaAgenteEntity>(a => a.AgenteId)
+                   .WithMany(ae => ae.AgendaAgente)
+                   .HasForeignKey(a => a.AgenteId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            // Relacionamento um para muitos com ClienteEntity
-            builder.HasMany(a => a.Clientes)
-                   .WithOne(c => c.AgendaAgente)
-                   .HasForeignKey(c => c.AgendaAgenteId)
+            // Relacionamento muitos para um com ClienteEntity
+            builder.HasOne(a => a.Cliente)
+                   .WithMany(c => c.AgendaAgente) // Propriedade de navegação para a lista de agendas
+                   .HasForeignKey(a => a.ClienteId)
                    .OnDelete(DeleteBehavior.Cascade);
         }
     }

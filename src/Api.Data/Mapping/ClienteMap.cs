@@ -16,11 +16,11 @@ namespace Data.Mapping
             builder.HasIndex(c => c.Email);
             builder.HasIndex(c => c.Telefone);
 
-            // Relacionamento com AgendaAgenteEntity
-            builder.HasOne(c => c.AgendaAgente)
-                   .WithMany(a => a.Clientes)
-                   .HasForeignKey(c => c.AgendaAgenteId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            // Relacionamento um para muitos com AgendaAgenteEntity
+            builder.HasMany(c => c.AgendaAgente) // Define o relacionamento
+                   .WithOne(a => a.Cliente) // Propriedade de navegação em AgendaAgenteEntity
+                   .HasForeignKey(a => a.ClienteId) // Chave estrangeira em AgendaAgenteEntity
+                   .OnDelete(DeleteBehavior.Cascade); // Exclusão em cascata
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Api.Domain.Entities;
-using Domain.Entities.AgendaAgente;
 using System;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -11,11 +11,13 @@ namespace Domain.Entities
         public string Email { get; set; }
         public bool Ativo { get; set; }
         public string Descricao { get; set; }
+        public string PauseStartComer { get; set; }
+        public string PauseEndComer { get; set; }
         public Guid UserId { get; set; }
         public UserEntity User { get; set; }
         public Guid? ProdutoId { get; set; }
         public ProdutosEntity Produto { get; set; }
-        public AgendaAgenteEntity AgendaAgente { get; set; }
+        public IEnumerable<AgendaAgenteEntity> AgendaAgente { get; set; }
 
     }
 }

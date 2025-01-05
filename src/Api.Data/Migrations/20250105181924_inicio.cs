@@ -309,7 +309,7 @@ namespace Data.Migrations
                     ClienteUsuarioId = table.Column<Guid>(nullable: false),
                     UserId = table.Column<Guid>(nullable: false),
                     TipoServicoId = table.Column<Guid>(nullable: false),
-                    Descricao = table.Column<string>(maxLength: 400, nullable: false),
+                    Descricao = table.Column<string>(nullable: true),
                     KM = table.Column<double>(nullable: false),
                     Delete = table.Column<DateTime>(nullable: true),
                     Ativo = table.Column<bool>(nullable: false),
@@ -320,7 +320,20 @@ namespace Data.Migrations
                     Endereco = table.Column<string>(nullable: true),
                     Numero = table.Column<string>(nullable: true),
                     Estado = table.Column<string>(nullable: true),
-                    Pais = table.Column<string>(nullable: true)
+                    Pais = table.Column<string>(nullable: true),
+                    SemanaStartHora = table.Column<string>(nullable: true),
+                    SemanaEndHora = table.Column<string>(nullable: true),
+                    PauseStartHora = table.Column<string>(nullable: true),
+                    PauseEndHora = table.Column<string>(nullable: true),
+                    Sabado = table.Column<bool>(nullable: false),
+                    SabadoStartHorario = table.Column<string>(nullable: true),
+                    SabadoEndHorario = table.Column<string>(nullable: true),
+                    Domingo = table.Column<bool>(nullable: false),
+                    DomingoStartHora = table.Column<string>(nullable: true),
+                    DomingoEndHora = table.Column<string>(nullable: true),
+                    Feriados = table.Column<bool>(nullable: false),
+                    FeriadoStartHora = table.Column<string>(nullable: true),
+                    FeriadoEndHora = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -434,6 +447,8 @@ namespace Data.Migrations
                     Email = table.Column<string>(nullable: true),
                     Ativo = table.Column<bool>(nullable: false),
                     Descricao = table.Column<string>(nullable: true),
+                    PauseStartComer = table.Column<string>(nullable: true),
+                    PauseEndComer = table.Column<string>(nullable: true),
                     UserId = table.Column<Guid>(nullable: false),
                     ProdutoId = table.Column<Guid>(nullable: true)
                 },
@@ -599,6 +614,48 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AgendaAgente",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreateAt = table.Column<DateTime>(nullable: true),
+                    UpdateAt = table.Column<DateTime>(nullable: true),
+                    AgenteId = table.Column<Guid>(nullable: false),
+                    ClienteId = table.Column<Guid>(nullable: false),
+                    Dia = table.Column<DateTime>(nullable: false),
+                    HorarioStart = table.Column<string>(nullable: true),
+                    HorarioEnd = table.Column<string>(nullable: true),
+                    Cancelado = table.Column<bool>(nullable: false),
+                    DataCancelamento = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_agendaagente", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_agendaagente_Agente_AgenteId",
+                        column: x => x.AgenteId,
+                        principalTable: "Agente",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_agendaagente_Cliente_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Cliente",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_agendaagente_AgenteId",
+                table: "agendaagente",
+                column: "AgenteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_agendaagente_ClienteId",
+                table: "agendaagente",
+                column: "ClienteId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Agente_Ativo",
                 table: "Agente",
@@ -670,11 +727,6 @@ namespace Data.Migrations
                 column: "UrlImagens");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cliente_Descricao",
-                table: "Cliente",
-                column: "Descricao");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cliente_Email",
                 table: "Cliente",
                 column: "Email");
@@ -688,11 +740,6 @@ namespace Data.Migrations
                 name: "IX_Cliente_Telefone",
                 table: "Cliente",
                 column: "Telefone");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cliente_UserId",
-                table: "Cliente",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ConteudoCategoria_Ativo",
@@ -945,13 +992,10 @@ namespace Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Agente");
+                name: "agendaagente");
 
             migrationBuilder.DropTable(
                 name: "AgenteProduto");
-
-            migrationBuilder.DropTable(
-                name: "Cliente");
 
             migrationBuilder.DropTable(
                 name: "ControleRigadores");
@@ -982,6 +1026,12 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "TermosResponsabilidades");
+
+            migrationBuilder.DropTable(
+                name: "Agente");
+
+            migrationBuilder.DropTable(
+                name: "Cliente");
 
             migrationBuilder.DropTable(
                 name: "Denuncias");

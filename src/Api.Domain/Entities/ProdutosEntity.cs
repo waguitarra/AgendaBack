@@ -17,9 +17,6 @@ namespace Api.Domain.Entities
         public UserEntity User { get; set; }
         public Guid TipoServicoId { get; set; }
         public TipoServicoEntity TipoServico { get; set; }
-
-        [Required]
-        [MaxLength(400)]
         public string Descricao { get; set; }
         public double KM { get; set; }
         public DateTime? Delete { get; set; }
@@ -43,6 +40,23 @@ namespace Api.Domain.Entities
 
         public IEnumerable<AgenteEntity> Agente { get; set; }
 
+        public string SemanaStartHora { get; set; }
+        public string SemanaEndHora { get; set; }
+
+        public string PauseStartHora { get; set; }
+        public string PauseEndHora { get; set; }
+
+        public bool Sabado { get; set; }
+        public string SabadoStartHorario { get; set; }
+        public string SabadoEndHorario { get; set; }
+
+        public bool Domingo { get; set; }
+        public string DomingoStartHora { get; set; }
+        public string DomingoEndHora { get; set; }
+
+        public bool Feriados { get; set; }
+        public string FeriadoStartHora { get; set; }
+        public string FeriadoEndHora { get; set; }
 
     }
 }
