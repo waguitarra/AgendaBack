@@ -466,6 +466,22 @@ namespace Api.Service.Services
             produto.Numero = dto.Numero ?? produto.Numero;
             produto.Estado = dto.Estado ?? produto.Estado;
             produto.Pais = dto.Pais ?? produto.Pais;
+            // Adicionando os campos de horário
+            produto.SemanaStartHora = dto.SemanaStartHora ?? produto.SemanaStartHora;
+            produto.SemanaEndHora = dto.SemanaEndHora ?? produto.SemanaEndHora;
+            produto.PauseStartHora = dto.PauseStartHora ?? produto.PauseStartHora;
+            produto.PauseEndHora = dto.PauseEndHora ?? produto.PauseEndHora;
+            produto.Sabado = dto.Sabado;
+            produto.SabadoStartHorario = dto.SabadoStartHorario ?? produto.SabadoStartHorario;
+            produto.SabadoEndHorario = dto.SabadoEndHorario ?? produto.SabadoEndHorario;
+            produto.Domingo = dto.Domingo;
+            produto.DomingoStartHora = dto.DomingoStartHora ?? produto.DomingoStartHora;
+            produto.DomingoEndHora = dto.DomingoEndHora ?? produto.DomingoEndHora;
+            produto.Feriados = dto.Feriados;
+            produto.FeriadoStartHora = dto.FeriadoStartHora ?? produto.FeriadoStartHora;
+            produto.FeriadoEndHora = dto.FeriadoEndHora ?? produto.FeriadoEndHora;
+
+            // Atualizando o timestamp
             produto.UpdateAt = DateTime.UtcNow;
         }
 

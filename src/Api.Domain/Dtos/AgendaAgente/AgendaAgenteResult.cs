@@ -2,7 +2,7 @@
 
 namespace Domain.Dtos.AgendaAgente
 {
-    public class AgendaAgenteDto 
+    public class AgendaAgenteResultDto
     {
         public Guid Id { get; set; }
 
