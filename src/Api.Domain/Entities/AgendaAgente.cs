@@ -2,10 +2,12 @@
 using Domain.Entities;
 using System;
 
-public class AgendaAgenteEntity : BaseEntity
+public class AgendaAgente : BaseEntity
 {
     public Guid AgenteId { get; set; }
     public AgenteEntity Agente { get; set; }
+
+    public Guid ProdutoId { get; set; }
 
     public Guid ClienteId { get; set; }
     public ClienteEntity Cliente { get; set; }

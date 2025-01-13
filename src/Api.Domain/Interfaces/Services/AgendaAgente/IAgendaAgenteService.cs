@@ -9,8 +9,8 @@ namespace Api.Domain.Interfaces.Services.Categorias
     {
         Task<AgendaAgenteDto> Get(Guid Id);
         Task<IEnumerable<AgendaAgenteDto>> GetAll();
-        Task<AgendaAgenteDto> Post(AgendaAgenteDto Categoria);
-        Task<AgendaAgenteDto> Put(AgendaAgenteDto Categoria);
+        Task<AgendaAgenteDto> Post(AgendaAgenteDto agenda);
+        Task<AgendaAgenteDto> Put(AgendaAgenteDto agenda);
         Task<bool> Delete(Guid id);
     }
 }

@@ -17,7 +17,7 @@ namespace Domain.Entities
         public UserEntity User { get; set; }
         public Guid? ProdutoId { get; set; }
         public ProdutosEntity Produto { get; set; }
-        public IEnumerable<AgendaAgenteEntity> AgendaAgente { get; set; }
+        public IEnumerable<AgendaAgente> AgendaAgente { get; set; }
 
     }
 }

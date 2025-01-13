@@ -622,6 +622,7 @@ namespace Data.Migrations
                     CreateAt = table.Column<DateTime>(nullable: true),
                     UpdateAt = table.Column<DateTime>(nullable: true),
                     AgenteId = table.Column<Guid>(nullable: false),
+                    ProdutoId = table.Column<Guid>(nullable: false),
                     ClienteId = table.Column<Guid>(nullable: false),
                     Dia = table.Column<DateTime>(nullable: false),
                     HorarioStart = table.Column<string>(nullable: true),
@@ -631,15 +632,15 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_agendaagente", x => x.Id);
+                    table.PrimaryKey("PK_AgendaAgente", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_agendaagente_Agente_AgenteId",
+                        name: "FK_AgendaAgente_Agente_AgenteId",
                         column: x => x.AgenteId,
                         principalTable: "Agente",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_agendaagente_Cliente_ClienteId",
+                        name: "FK_AgendaAgente_Cliente_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Cliente",
                         principalColumn: "Id",
@@ -647,13 +648,13 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_agendaagente_AgenteId",
-                table: "agendaagente",
+                name: "IX_AgendaAgente_AgenteId",
+                table: "AgendaAgente",
                 column: "AgenteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_agendaagente_ClienteId",
-                table: "agendaagente",
+                name: "IX_AgendaAgente_ClienteId",
+                table: "AgendaAgente",
                 column: "ClienteId");
 
             migrationBuilder.CreateIndex(
@@ -992,7 +993,7 @@ namespace Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "agendaagente");
+                name: "AgendaAgente");
 
             migrationBuilder.DropTable(
                 name: "AgenteProduto");

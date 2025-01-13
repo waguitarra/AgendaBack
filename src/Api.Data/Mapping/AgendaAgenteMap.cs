@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.Mapping
 {
-    public class AgendaAgenteMap : IEntityTypeConfiguration<AgendaAgenteEntity>
+    public class AgendaAgenteMap : IEntityTypeConfiguration<AgendaAgente>
     {
-        public void Configure(EntityTypeBuilder<AgendaAgenteEntity> builder)
+        public void Configure(EntityTypeBuilder<AgendaAgente> builder)
         {
             // Define a tabela
-            builder.ToTable("AgendaAgente");
+            builder.ToTable("agendaagente");
+            builder.HasKey(u => u.Id);
 
             // Define a chave primária
             builder.HasKey(a => a.Id);

@@ -15,6 +15,8 @@ namespace Api.Domain.Interfaces.Services.Agente
         Task<AgenteDto> Put(AgenteDto Agente);
         Task<bool> Delete(Guid id);
         Task<bool> DeleteMaster(Guid id);
-        Task<IEnumerable<ProdutoAgenteDto>> GetAllAgenteProduto(Guid produtoId);
+        Task<List<ProdutoAgenteDto>> GetAllAgenteProduto(Guid produtoId);
+
+
     }
 }

@@ -16,7 +16,7 @@ namespace Domain.Entities
         public Guid ProdutoId { get; set; }
         public Guid UserId { get; set; }
         public string json { get; set;}
-        public List<AgendaAgenteEntity> AgendaAgente { get; set; }
+        public List<AgendaAgente> AgendaAgente { get; set; }
     }
 
 

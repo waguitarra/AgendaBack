@@ -1,7 +1,9 @@
+using Api.Domain.Dtos.ImagensP;
 using Api.Domain.Interfaces.Services.Agente;
 using Api.Domain.Interfaces.Services.Produtos;
 using Api.Domain.Repository;
 using AutoMapper;
+using Domain.Dtos.AgendaAgente;
 using Domain.Dtos.Agente;
 using Domain.Dtos.AgenteProduto;
 using Domain.Entities;
@@ -19,15 +21,17 @@ namespace Api.Service.Services
         private readonly IMapper _mapper;
         private IUUserRepository _userRepositorio;
         private IUProdutosRepository _produtosRepositorio;
+        private IUAgendaAgenteRepository _agendaAgenteRepository;
         public IUAgenteProdutoRepository _agenteProdutoRepository { get; set; }
 
-        public AgenteService(IUAgenteRepository repository, IMapper mapper, IUUserRepository userRepositorio, IUAgenteProdutoRepository agenteProdutoRepository, IUProdutosRepository produtosRepositorio)
+        public AgenteService(IUAgenteRepository repository, IMapper mapper, IUUserRepository userRepositorio, IUAgenteProdutoRepository agenteProdutoRepository, IUProdutosRepository produtosRepositorio, IUAgendaAgenteRepository agendaAgenteRepository)
         {
             _repository = repository;
             _mapper = mapper;
             _userRepositorio = userRepositorio;
             _agenteProdutoRepository = agenteProdutoRepository;
             _produtosRepositorio = produtosRepositorio;
+            _agendaAgenteRepository = agendaAgenteRepository;
         }
 
         public async Task<AgenteDto> Get(Guid id)
@@ -44,7 +48,7 @@ namespace Api.Service.Services
             return _mapper.Map<IEnumerable<AgenteDto>>(listEntity);
         }
 
-        public async Task<IEnumerable<ProdutoAgenteDto>> GetAllAgenteProduto(Guid produtoId)
+        public async Task<List<ProdutoAgenteDto>> GetAllAgenteProduto(Guid produtoId)
         {
             // Obtém o produto com o ID fornecido
             var produto = await _produtosRepositorio.GetPesquisaProduto(produtoId);
@@ -59,7 +63,7 @@ namespace Api.Service.Services
 
             if (agenteProdutos == null || !agenteProdutos.Any())
             {
-                return Enumerable.Empty<ProdutoAgenteDto>(); // Retorna lista vazia se nenhum agente for encontrado
+                return new List<ProdutoAgenteDto>(); // Retorna lista vazia se nenhum agente for encontrado
             }
 
             // Filtra os IDs de agentes encontrados em agenteProdutos
@@ -72,11 +76,10 @@ namespace Api.Service.Services
             var agentesFiltrados = allAgentes.Where(a => agenteIds.Contains(a.Id)).ToList();
 
             // Mapeia os agentes para ProdutoAgenteDto e preenche as informações do produto
-            var resultado = agentesFiltrados.Select(agente => new ProdutoAgenteDto
+            var resultado = await Task.WhenAll(agentesFiltrados.Select(async agente => new ProdutoAgenteDto
             {
                 Id = agente.Id,
                 Nome = agente.Nome,
-                Email = agente.Email,
                 Imagem = agente.Imagem,
                 NomeProduto = produto.NomeProduto,
                 Ativo = agente.Ativo,
@@ -88,19 +91,48 @@ namespace Api.Service.Services
                 Estado = produto.Estado,
                 Pais = produto.Pais,
                 UserId = produto.UserId,
-                ProdutoId = produto.Id
-            });
+                ProdutoId = produto.Id,
+                AgentePauseStartComer = agente.PauseStartComer,
+                AgentePauseEndComer = agente.PauseEndComer,
+                SemanaStartHora = produto.SemanaStartHora,
+                SemanaEndHora = produto.SemanaEndHora,
+                PauseStartHora = produto.PauseStartHora,
+                PauseEndHora = produto.PauseEndHora,
+                Sabado = produto.Sabado,
+                SabadoStartHorario = produto.SabadoStartHorario,
+                SabadoEndHorario = produto.SabadoEndHorario,
+                Domingo = produto.Domingo,
+                DomingoStartHora = produto.DomingoStartHora,
+                DomingoEndHora = produto.DomingoEndHora,
+                Feriados = produto.Feriados,
+                FeriadoStartHora = produto.FeriadoStartHora,
+                FeriadoEndHora = produto.FeriadoEndHora,
+                ImagensP = produto.ImagensP.Select(p => p.UrlImagens).FirstOrDefault(),
+                AgendaAgente = await GetAllAgenteAsync(produto.Id, agente.Id) // Chamada assíncrona para obter agenda
+            }));
 
-            return resultado;
+            // Retorna a lista de ProdutoAgenteDto
+            return resultado.ToList();
         }
 
 
+        private async Task<List<AgendaAgenteHorasDto>> GetAllAgenteAsync(Guid produtoId, Guid agenteId)
+        {
+            // Obtém as entidades do repositório
+            var entityAgente = await _agendaAgenteRepository.GetAllAgenteProdutoId(produtoId, agenteId);
+
+            if (entityAgente == null || !entityAgente.Any())
+            {
+                return new List<AgendaAgenteHorasDto>(); // Retorna uma lista vazia se não houver resultados
+            }
+
+            // Mapeia as entidades para DTOs usando AutoMapper
+            return _mapper.Map<List<AgendaAgenteHorasDto>>(entityAgente);
+        }
 
 
         public async Task<AgenteDto> Post(AgenteDto agenteDto)
         {
-
-
             var user = await _userRepositorio.GetUserIdDadosBasicos(agenteDto.UserId);
 
             if (user == null)

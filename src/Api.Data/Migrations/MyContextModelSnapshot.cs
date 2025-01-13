@@ -17,7 +17,7 @@ namespace Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("agendaagente", b =>
+            modelBuilder.Entity("AgendaAgente", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,6 +47,9 @@ namespace Data.Migrations
                     b.Property<string>("HorarioStart")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<Guid>("ProdutoId")
+                        .HasColumnType("char(36)");
+
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime(6)");
 
@@ -56,7 +59,7 @@ namespace Data.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.ToTable("agendaagente");
+                    b.ToTable("AgendaAgente");
                 });
 
             modelBuilder.Entity("Api.Domain.Entities.CategoriaEntity", b =>
@@ -1163,7 +1166,7 @@ namespace Data.Migrations
                     b.ToTable("TermosResponsabilidades");
                 });
 
-            modelBuilder.Entity("agendaagente", b =>
+            modelBuilder.Entity("AgendaAgente", b =>
                 {
                     b.HasOne("Domain.Entities.AgenteEntity", "Agente")
                         .WithMany("AgendaAgente")

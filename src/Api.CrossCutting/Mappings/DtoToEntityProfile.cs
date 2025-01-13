@@ -196,10 +196,13 @@ namespace Api.CrossCutting.Mappings
             #endregion
 
             #region AgendaAgente
-            CreateMap<AgendaAgenteDto, AgendaAgenteEntity>().ReverseMap();
+            CreateMap<AgendaAgenteDto, AgendaAgente>().ReverseMap();
+            CreateMap<AgendaAgenteHorasDto, AgendaAgente>().ReverseMap();
+            CreateMap<AgendaAgenteResultDto, AgendaAgente>().ReverseMap();
+            CreateMap<AgendaAgenteResultDto, AgendaAgenteHorasDto>().ReverseMap();
             #endregion
 
-            
+
 
         }
     }

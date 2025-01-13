@@ -2,6 +2,7 @@ using Api.Domain.Interfaces.Services.Categorias;
 using Api.Domain.Repository;
 using AutoMapper;
 using Domain.Dtos.AgendaAgente;
+using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +38,12 @@ namespace Api.Service.Services
 
         public async Task<AgendaAgenteDto> Post(AgendaAgenteDto Agendaagente)
         {
-            var listEntity = await _repository.SelectAsync();
-           
-            return new AgendaAgenteDto();
+            var listEntity = _mapper.Map<AgendaAgente>(Agendaagente);
+
+            var result = await _repository.InsertAsync(listEntity);
+
+            return _mapper.Map<AgendaAgenteDto>(result);
+
 
         }
 
@@ -48,7 +52,7 @@ namespace Api.Service.Services
             var AgendaagenteId = await _repository.SelectAsync(Agendaagente.Id);
             if (AgendaagenteId != null)
             {
-                var entity = _mapper.Map<AgendaAgenteEntity>(Agendaagente);
+                var entity = _mapper.Map<AgendaAgente>(Agendaagente);
 
                 var result = await _repository.UpdateAsync(entity);
                 return _mapper.Map<AgendaAgenteDto>(result);
@@ -62,7 +66,7 @@ namespace Api.Service.Services
             var AgendaagenteId =  _repository.SelectAsync(id);
             if (AgendaagenteId != null)
             {
-                var entity = _mapper.Map<AgendaAgenteEntity>(AgendaagenteId);
+                var entity = _mapper.Map<AgendaAgente>(AgendaagenteId);
                 entity.Cancelado = true;
  
                 await _repository.UpdateAsync(entity);

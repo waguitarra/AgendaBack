@@ -2,7 +2,7 @@
 use AgentesAgendamento;
 
 
-SELECT * FROM agendamento.categoria;
+SELECT * FROM categoria;
 
 INSERT INTO categoria (Id, CreateAt, UpdateAt, TipoCategoria, Descricao, UrlImagens, Ativo, Tipo, Pais)
 VALUES

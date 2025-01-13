@@ -106,4 +106,4 @@ VALUES
 
 
 
-SELECT * FROM agendamento.tiposervico;
+SELECT * FROM tiposervico;

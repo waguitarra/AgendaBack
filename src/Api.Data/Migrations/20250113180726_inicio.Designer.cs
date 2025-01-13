@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20250105181924_inicio")]
+    [Migration("20250113180726_inicio")]
     partial class inicio
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("AgendaAgenteEntity", b =>
+            modelBuilder.Entity("AgendaAgente", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,6 +49,9 @@ namespace Data.Migrations
                     b.Property<string>("HorarioStart")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<Guid>("ProdutoId")
+                        .HasColumnType("char(36)");
+
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime(6)");
 
@@ -58,7 +61,7 @@ namespace Data.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.ToTable("AgendaAgenteEntity");
+                    b.ToTable("AgendaAgente");
                 });
 
             modelBuilder.Entity("Api.Domain.Entities.CategoriaEntity", b =>
@@ -1165,7 +1168,7 @@ namespace Data.Migrations
                     b.ToTable("TermosResponsabilidades");
                 });
 
-            modelBuilder.Entity("AgendaAgenteEntity", b =>
+            modelBuilder.Entity("AgendaAgente", b =>
                 {
                     b.HasOne("Domain.Entities.AgenteEntity", "Agente")
                         .WithMany("AgendaAgente")
