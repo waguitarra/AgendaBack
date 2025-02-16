@@ -81,7 +81,7 @@ namespace Api.Application.Controllers
                 }
                 else
                 {
-                    return BadRequest("Agendamento já cadastrado ou inválido.");
+                    return BadRequest(result.error);
                 }
             }
             catch (ArgumentException e)

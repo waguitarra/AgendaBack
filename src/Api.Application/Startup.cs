@@ -126,7 +126,7 @@ namespace application
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "App Troca de Semente",
+                    Title = "Agendamento de Agentes",
                     Description = "Arquitetura DDD, TDD core 3.1 ",
                     TermsOfService = new Uri("http://www.macrosassessorias.com.br"),
                     Contact = new OpenApiContact
@@ -181,7 +181,7 @@ namespace application
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Troca de Sementes");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "agenda");
                 c.RoutePrefix = string.Empty;
             });
 

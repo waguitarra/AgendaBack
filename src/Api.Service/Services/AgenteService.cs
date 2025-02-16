@@ -1,3 +1,4 @@
+using Api.Data.Context;
 using Api.Domain.Dtos.ImagensP;
 using Api.Domain.Interfaces.Services.Agente;
 using Api.Domain.Interfaces.Services.Produtos;
@@ -52,7 +53,6 @@ namespace Api.Service.Services
         {
             // Obtém o produto com o ID fornecido
             var produto = await _produtosRepositorio.GetPesquisaProduto(produtoId);
-
             if (produto == null)
             {
                 throw new ArgumentException("Produto não encontrado.");
@@ -60,7 +60,6 @@ namespace Api.Service.Services
 
             // Obtém todas as associações de AgenteProduto com base no produtoId
             var agenteProdutos = await _agenteProdutoRepository.GetAllUserClientesProdutoId(produtoId);
-
             if (agenteProdutos == null || !agenteProdutos.Any())
             {
                 return new List<ProdutoAgenteDto>(); // Retorna lista vazia se nenhum agente for encontrado
@@ -69,14 +68,21 @@ namespace Api.Service.Services
             // Filtra os IDs de agentes encontrados em agenteProdutos
             var agenteIds = agenteProdutos.Select(ap => ap.AgenteId).Distinct().ToList();
 
-            // Busca todos os agentes
+            // Busca todos os agentes SEM fazer chamadas concorrentes
             var allAgentes = await _repository.SelectAsync();
-
-            // Filtra os agentes manualmente com base nos IDs encontrados
             var agentesFiltrados = allAgentes.Where(a => agenteIds.Contains(a.Id)).ToList();
 
+            // Criar um dicionário para armazenar as agendas e evitar concorrência
+            var agendaDictionary = new Dictionary<Guid, List<AgendaAgenteHorasDto>>();
+
+            foreach (var agente in agentesFiltrados)
+            {
+                // Agora cada chamada aguarda a anterior terminar antes de executar outra
+                agendaDictionary[agente.Id] = await GetAllAgenteAsync(produto.Id, agente.Id);
+            }
+
             // Mapeia os agentes para ProdutoAgenteDto e preenche as informações do produto
-            var resultado = await Task.WhenAll(agentesFiltrados.Select(async agente => new ProdutoAgenteDto
+            var resultado = agentesFiltrados.Select(agente => new ProdutoAgenteDto
             {
                 Id = agente.Id,
                 Nome = agente.Nome,
@@ -108,11 +114,10 @@ namespace Api.Service.Services
                 FeriadoStartHora = produto.FeriadoStartHora,
                 FeriadoEndHora = produto.FeriadoEndHora,
                 ImagensP = produto.ImagensP.Select(p => p.UrlImagens).FirstOrDefault(),
-                AgendaAgente = await GetAllAgenteAsync(produto.Id, agente.Id) // Chamada assíncrona para obter agenda
-            }));
+                AgendaAgente = agendaDictionary.ContainsKey(agente.Id) ? agendaDictionary[agente.Id] : null
+            }).ToList();
 
-            // Retorna a lista de ProdutoAgenteDto
-            return resultado.ToList();
+            return resultado;
         }
 
 

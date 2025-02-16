@@ -36,16 +36,35 @@ namespace Api.Service.Services
             return _mapper.Map<IEnumerable<AgendaAgenteDto>>(listEntity);
         }
 
-        public async Task<AgendaAgenteDto> Post(AgendaAgenteDto Agendaagente)
+        public async Task<AgendaAgenteDto> Post(AgendaAgenteDto agendaAgenteDto)
         {
-            var listEntity = _mapper.Map<AgendaAgente>(Agendaagente);
+            // Verifica se o agendamento já existe para o mesmo produto, agente, data e cliente
+            var disponivel = await _repository.IsAgendamentoDisponivel(
+                agendaAgenteDto.ProdutoId,
+                agendaAgenteDto.AgenteId,
+                agendaAgenteDto.Dia,
+                agendaAgenteDto.Cliente.Email,
+                agendaAgenteDto.Cliente.Telefone
+            );
 
-            var result = await _repository.InsertAsync(listEntity);
+            if (!disponivel)
+            {
+                // Define a mensagem de erro no DTO e retorna
+                agendaAgenteDto.error = "Ya existe una cita activa para este cliente en esta fecha. Verifique el correo electrónico o el teléfono, o intente cancelar la cita activa.";
+                return agendaAgenteDto;
+            }
 
+            // Mapeia o DTO para a entidade
+            var agendaEntity = _mapper.Map<AgendaAgente>(agendaAgenteDto);
+
+            // Insere o novo agendamento
+            var result = await _repository.InsertAsync(agendaEntity);
+
+            // Retorna o DTO do agendamento criado
             return _mapper.Map<AgendaAgenteDto>(result);
-
-
         }
+
+
 
         public async Task<AgendaAgenteDto> Put(AgendaAgenteDto Agendaagente)
         {

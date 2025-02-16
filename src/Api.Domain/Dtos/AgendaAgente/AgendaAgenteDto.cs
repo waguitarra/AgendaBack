@@ -17,5 +17,6 @@ namespace Domain.Dtos.AgendaAgente
         public string HorarioEnd { get; set; }
         public bool Cancelado { get; set; }
         public DateTime? DataCancelamento { get; set; }
+        public string error { get; set; }
     }
 }
